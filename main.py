@@ -4,33 +4,47 @@ Baidalakova B.
 Komarova E.
 '''
 import os
+import os.path
+import ru_local
 
 def main():
+    '''Основная программа, которая выводит путь к текущему каталогу и меню. Вызывает функцию выполнения команд.'''
     while True:
-       print (os.getcwd())
-       print (MENU)
-       command = os.acceptCommand()
-       os.runCommand(command)
-       if command == QUIT:
-          print ('Работа программы завершена.')
+       print(os.getcwd())
+       print(ru_local.MENU)
+       command = acceptCommand()
+       print(command)
+       runCommand(command)
+       if command == ru_local.QUIT:
+          print('Работа программы завершена.')
           break
-
-
-def walker():
-    path = r'C:\Python34'
-    for root, dirs, files in os.walk(path):
-        print(root, dirs, files)
 
 
 def acceptCommand():
     '''Запрашивает номер команды и в случае если номер команды указан некорректно,
     выводит сообщение об ошибке. Запрос команд осуществляется до тех пор,
     пока не введен корректный номер команды. Возвращает корректный номер команды.'''
+    while True:
+        command = int(input())
+        if command in range(1, 8):
+            break
+    return command
 
 
 def runCommand(command):
     '''Определяет по номеру команды command, какую функцию следует выполнить.'''
-
+    if command == 1:
+        return 'def walker'
+    if command == 2:
+        return 'def walker'
+    if command == 3:
+        return 'def walker'
+    if command == 4:
+        return 'def countFiles(path)'
+    if command == 5:
+        return 'def countBytes(path)'
+    if command == 6:
+        return 'def findFiles(target, path)'
 
 
 def moveUp():
@@ -58,6 +72,6 @@ def findFiles(target, path):
     выводит соответствующее сообщение.'''
 
 
-walker()
-
+if __name__ == '__main__':
+    main()
 
