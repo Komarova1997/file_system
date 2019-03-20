@@ -13,7 +13,6 @@ def main():
        print(os.getcwd())
        print(ru_local.MENU)
        command = acceptCommand()
-       print(command)
        runCommand(command)
        if command == ru_local.QUIT:
           print('Работа программы завершена.')
@@ -36,9 +35,10 @@ def runCommand(command):
     if command == 1:
         return 'def walker'
     if command == 2:
-        return 'def walker'
+        moveUp()
     if command == 3:
-        return 'def walker'
+        current = input(ru_local.CURRENT_DIR)
+        moveDown(current)
     if command == 4:
         return 'def countFiles(path)'
     if command == 5:
@@ -48,12 +48,21 @@ def runCommand(command):
 
 
 def moveUp():
-    '''Делает текущим родительский каталог.'''
+    '''Делает текущим родительский каталог. Возвращает переход в новый каталог по новому пути'''
+    dic_now = os.getcwd()
+    num = dic_now.rfind('\\')
+    return os.chdir(dic_now[:num])
 
 
-def moveDown(currentDir):
-    '''Запрашивает имя подкаталога. Если имя указано корректно делает каталог находящийся в currentDir текущим,
+def moveDown(current):
+    '''Запрашивает имя подкаталога. Если имя указано корректно делает каталог находящийся в current текущим,
      иначе выводит сообщение об ошибке.'''
+    try:
+        dic_now = os.getcwd()
+        dic_now += '\\' + current
+        return os.chdir(dic_now)
+    except FileNotFoundError:
+        print(ru_local.ERROR_DOWN)
 
 
 def countFiles(path):
