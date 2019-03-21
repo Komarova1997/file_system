@@ -33,18 +33,25 @@ def acceptCommand():
 def runCommand(command):
     '''Определяет по номеру команды command, какую функцию следует выполнить.'''
     if command == 1:
-        return 'def walker'
+        print(catalog())
     if command == 2:
         moveUp()
     if command == 3:
         current = input(ru_local.CURRENT_DIR)
         moveDown(current)
     if command == 4:
-        return 'def countFiles(path)'
+        return 'countFiles(path)'
     if command == 5:
-        return 'def countBytes(path)'
+        path = os.getcwd()
+        bytes = 0
+        print(countBytes(path, bytes))
     if command == 6:
         return 'def findFiles(target, path)'
+
+
+def catalog():
+    dic_now = os.getcwd()
+    return os.listdir(dic_now)
 
 
 def moveUp():
@@ -59,7 +66,7 @@ def moveDown(current):
      иначе выводит сообщение об ошибке.'''
     try:
         dic_now = os.getcwd()
-        dic_now += '\\' + current
+        dic_now = os.path.join(dic_now, current)
         return os.chdir(dic_now)
     except FileNotFoundError:
         print(ru_local.ERROR_DOWN)
@@ -70,9 +77,17 @@ def countFiles(path):
     В подсчет включаются все файлы, находящиеся в подкаталогах. Возвращает количество файлов.'''
 
 
-def countBytes(path):
+def countBytes(path, bytes):
     '''Рекурсивная функция подсчитывающая суммарный объем (в байтах) всех файлов в указанном каталоге path.
     В подсчет включаются все файлы, находящиеся в подкаталогах. Возвращает суммарное количество байт.'''
+    os.chdir(path)
+    main_list = os.listdir(path)
+    for i in main_list:
+        if os.path.isfile(path + '\\' + i):
+            bytes += os.path.getsize(path + '\\' + i)
+        if os.path.isdir(path + '\\' + i):
+            countBytes(path + '\\' + i, bytes)
+    return bytes
 
 
 def findFiles(target, path):
@@ -83,4 +98,3 @@ def findFiles(target, path):
 
 if __name__ == '__main__':
     main()
-
