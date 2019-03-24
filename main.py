@@ -8,21 +8,22 @@ import os.path
 import ru_local
 
 def main():
-    '''Основная программа, которая выводит путь к текущему каталогу и меню. Вызывает функцию выполнения команд.'''
+    '''The main program that displays the path to the current directory and menu. Invokes
+     the command execution function.'''
     while True:
        print(os.getcwd())
        print(ru_local.MENU)
        command = acceptCommand()
        runCommand(command)
        if command == ru_local.QUIT:
-          print('Работа программы завершена.')
+          print(ru_local.END)
           break
 
 
 def acceptCommand():
-    '''Запрашивает номер команды и в случае если номер команды указан некорректно,
-    выводит сообщение об ошибке. Запрос команд осуществляется до тех пор,
-    пока не введен корректный номер команды. Возвращает корректный номер команды.'''
+    '''Requests the command number and in case the command number is specified incorrectly,
+    displays an error message. Command request is carried out
+    until the correct command number is entered. Returns the correct command number.'''
     while True:
         command = int(input())
         if command in range(1, 8):
@@ -31,20 +32,28 @@ def acceptCommand():
 
 
 def runCommand(command):
-    '''Определяет по номеру команды command, какую функцию следует выполнить.'''
+    '''Determines by the command number "command" what function should be performed.'''
+    # Done
     if command == 1:
         print(catalog())
+    # Done
     if command == 2:
         moveUp()
+    # Done
     if command == 3:
         current = input(ru_local.CURRENT_DIR)
         moveDown(current)
+    # Done
     if command == 4:
-        return 'countFiles(path)'
+        path = os.getcwd()
+        print(countFiles(path))
+        os.chdir(path)
+    # Done
     if command == 5:
         path = os.getcwd()
-        bytes = 0
-        print(countBytes(path, bytes))
+        print(countBytes(path))
+        os.chdir(path)
+    # Not Correct
     if command == 6:
         return 'def findFiles(target, path)'
 
@@ -55,15 +64,15 @@ def catalog():
 
 
 def moveUp():
-    '''Делает текущим родительский каталог. Возвращает переход в новый каталог по новому пути'''
+    '''Makes  the parent directory current directory. Returns the transition to a new directory in a new way.'''
     dic_now = os.getcwd()
     num = dic_now.rfind('\\')
     return os.chdir(dic_now[:num])
 
 
 def moveDown(current):
-    '''Запрашивает имя подкаталога. Если имя указано корректно делает каталог находящийся в current текущим,
-     иначе выводит сообщение об ошибке.'''
+    '''Requests a subdirectory name. If the name specified correctly makes the directory in the "current" current,
+     otherwise displays an error message.'''
     try:
         dic_now = os.getcwd()
         dic_now = os.path.join(dic_now, current)
@@ -72,21 +81,39 @@ def moveDown(current):
         print(ru_local.ERROR_DOWN)
 
 
+def moveDown_1(current):
+    '''Вспомогательная функция'''
+    try:
+        dic_now = os.getcwd()
+        dic_now = os.path.join(dic_now, current)
+        return os.chdir(dic_now)
+    except FileNotFoundError:
+        return
+
+
 def countFiles(path):
-    '''Рекурсивная функция подсчитывающая количество файлов в указанном каталоге path.
-    В подсчет включаются все файлы, находящиеся в подкаталогах. Возвращает количество файлов.'''
+    '''A recursive function that counts the number of files in the specified  directory "path".
+    All files in subdirectories are included in the calculation. Returns the number of files.'''
+    global counter
+    for file in catalog():
+        if os.path.isfile(path + '\\' + file):
+            counter += 1
+        if os.path.isdir(path + '\\' + file):
+            moveDown_1(file)
+            countFiles(path + '\\' + file)
+    return counter
 
 
-def countBytes(path, bytes):
-    '''Рекурсивная функция подсчитывающая суммарный объем (в байтах) всех файлов в указанном каталоге path.
-    В подсчет включаются все файлы, находящиеся в подкаталогах. Возвращает суммарное количество байт.'''
-    os.chdir(path)
-    main_list = os.listdir(path)
-    for i in main_list:
-        if os.path.isfile(path + '\\' + i):
-            bytes += os.path.getsize(path + '\\' + i)
-        if os.path.isdir(path + '\\' + i):
-            countBytes(path + '\\' + i, bytes)
+def countBytes(path):
+    '''A recursive function that counts the total amount (in bytes) of all files in the specified "path" directory.
+    All files in subdirectories are included in the calculation. Returns the total number of bytes.'''
+    global bytes
+    for file in catalog():
+        if os.path.isfile(path + '\\' + file):
+            bytes += os.path.getsize(path + '\\' + file)
+        if os.path.isdir(path + '\\' + file):
+            moveDown_1(file)
+            countBytes(path + '\\' + file)
     return bytes
 
 
@@ -95,6 +122,10 @@ def findFiles(target, path):
      В поиск включаются все подкаталоги каталога path. В случае если файлы не найдены,
     выводит соответствующее сообщение.'''
 
+
+# Дополнительный блок
+counter = 0
+bytes = 0
 
 if __name__ == '__main__':
     main()
