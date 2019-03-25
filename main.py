@@ -121,6 +121,12 @@ def findFiles(target, path):
     '''A recursive function that generates a list of paths to files whose name contains the "target".
      All subdirectories of the path directory are included in the search. If no files were found,
     displays the appropriate message.'''
+        if target in catalog():
+        return True
+    for file in catalog():
+        if os.path.isdir(path + '\\' + file):
+            moveDown_1(file)
+            findFiles(os.getcwd(), target)
 
 
 # Additional block
