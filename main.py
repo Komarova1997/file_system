@@ -33,29 +33,29 @@ def acceptCommand():
 
 def runCommand(command):
     '''Determines by the command number "command" what function should be performed.'''
-    # Done
     if command == 1:
         print(catalog())
-    # Done
     if command == 2:
         moveUp()
-    # Done
     if command == 3:
         current = input(ru_local.CURRENT_DIR)
         moveDown(current)
-    # Done
     if command == 4:
         path = os.getcwd()
         print(countFiles(path))
         os.chdir(path)
-    # Done
     if command == 5:
         path = os.getcwd()
         print(countBytes(path))
         os.chdir(path)
-    # Not Correct
     if command == 6:
-        return 'def findFiles(target, path)'
+        target = input(ru_local.INPUT_FILE)
+        path = os.getcwd()
+        a = findFiles(target, path)
+        if a is True:
+            print(ru_local.TRUE_FILE)
+        else:
+            print(ru_local.FALSE_FILE)
 
 
 def catalog():
@@ -82,7 +82,7 @@ def moveDown(current):
 
 
 def moveDown_1(current):
-    '''Вспомогательная функция'''
+    '''Auxiliary function'''
     try:
         dic_now = os.getcwd()
         dic_now = os.path.join(dic_now, current)
@@ -118,12 +118,12 @@ def countBytes(path):
 
 
 def findFiles(target, path):
-    '''Рекурсивная функция, формирующая список путей к файлам, в имени которых содержится target.
-     В поиск включаются все подкаталоги каталога path. В случае если файлы не найдены,
-    выводит соответствующее сообщение.'''
+    '''A recursive function that generates a list of paths to files whose name contains the "target".
+     All subdirectories of the path directory are included in the search. If no files were found,
+    displays the appropriate message.'''
 
 
-# Дополнительный блок
+# Additional block
 counter = 0
 bytes = 0
 
